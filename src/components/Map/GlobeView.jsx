@@ -38,7 +38,7 @@ function GlobeView({ guides, onMarkerClick }) {
       controls.autoRotateSpeed = isHovering ? 0.1 : 0.5
 
       // Set zoom limits to prevent cutting off globe edges
-      controls.minDistance = 140  // Don't zoom in too close
+      controls.minDistance = 120  // Don't zoom in too close
       controls.maxDistance = 400  // Don't zoom out too far
 
       // Enable damping for smoother controls
