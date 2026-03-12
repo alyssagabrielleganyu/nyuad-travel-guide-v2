@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "migrate-data": "node scripts/migrate-data.js"
+    "migrate-data": "node scripts/migrate-data.js",
+    "fix-coords": "node scripts/fix-coordinates.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.1",
