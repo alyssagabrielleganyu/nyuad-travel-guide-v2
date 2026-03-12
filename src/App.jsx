@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from './hooks/useAuth'
 import { useGuides } from './hooks/useGuides'
 import GlobeView from './components/Map/GlobeView'
+import GuideForm from './components/Guide/GuideForm'
 
 // Helper function to get continent from country
 const getContinent = (countryName) => {
@@ -31,6 +32,7 @@ function App() {
   const [expandedContinent, setExpandedContinent] = useState(null)
   const [expandedCountry, setExpandedCountry] = useState(null)
   const [showCuratedDropdown, setShowCuratedDropdown] = useState(false)
+  const [showGuideForm, setShowGuideForm] = useState(false)
 
   // Auto-select when search has results
   useEffect(() => {
@@ -248,6 +250,12 @@ function App() {
               )}
             </div>
 
+            <button
+              onClick={() => setShowGuideForm(true)}
+              className="px-3 md:px-4 py-2 md:py-3 bg-[#8B4513] text-[#F5E6D3] rounded-full hover:bg-[#6D3410] transition text-xs md:text-sm font-medium whitespace-nowrap"
+            >
+              + Add Guide
+            </button>
             <button className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#3D3D3D] text-[#F5E6D3] flex items-center justify-center hover:bg-[#5D5D5D] transition">
               <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -453,6 +461,23 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* Guide Form Modal */}
+      {showGuideForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-2xl">
+            <GuideForm
+              onSuccess={(newGuide) => {
+                setShowGuideForm(false)
+                // Auto-select the new guide
+                setSelectedGuides([newGuide])
+                setCurrentGuideIndex(0)
+              }}
+              onCancel={() => setShowGuideForm(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
