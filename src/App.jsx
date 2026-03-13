@@ -83,8 +83,28 @@ function App() {
     return (
       <div className="min-h-screen bg-[#F5E6D3] flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">🌍</div>
-          <div className="text-2xl text-[#3D3D3D] font-mono">loading horizons...</div>
+          <div className="mb-4 flex justify-center">
+            <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <g fill="none" stroke="#3D3D3D" strokeWidth="2">
+                {/* Outer petals - evenly distributed in a circle */}
+                <ellipse cx="50" cy="22" rx="18" ry="14"/>
+                <ellipse cx="72" cy="36" rx="18" ry="14" transform="rotate(72 72 36)"/>
+                <ellipse cx="64" cy="64" rx="18" ry="14" transform="rotate(144 64 64)"/>
+                <ellipse cx="36" cy="64" rx="18" ry="14" transform="rotate(216 36 64)"/>
+                <ellipse cx="28" cy="36" rx="18" ry="14" transform="rotate(288 28 36)"/>
+                {/* Middle layer */}
+                <ellipse cx="50" cy="35" rx="14" ry="11"/>
+                <ellipse cx="62" cy="44" rx="14" ry="11" transform="rotate(72 62 44)"/>
+                <ellipse cx="56" cy="56" rx="14" ry="11" transform="rotate(144 56 56)"/>
+                <ellipse cx="44" cy="56" rx="14" ry="11" transform="rotate(216 44 56)"/>
+                <ellipse cx="38" cy="44" rx="14" ry="11" transform="rotate(288 38 44)"/>
+                {/* Center */}
+                <circle cx="50" cy="50" r="10" stroke="#3D3D3D" strokeWidth="2"/>
+                <circle cx="50" cy="50" r="6"/>
+              </g>
+            </svg>
+          </div>
+          <div className="text-2xl text-[#3D3D3D] font-mono">picking a rose from every garden</div>
         </div>
       </div>
     )
@@ -123,8 +143,26 @@ function App() {
       <div className="border-b-2 border-[#3D3D3D] px-4 md:px-12 py-4 md:py-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-3 md:gap-6">
-            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full border-3 border-[#3D3D3D] flex items-center justify-center">
-              <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-[#3D3D3D]"></div>
+            <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center">
+              <svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 md:w-16 md:h-16">
+                <g fill="none" stroke="#3D3D3D" strokeWidth="2">
+                  {/* Outer petals - evenly distributed in a circle */}
+                  <ellipse cx="50" cy="22" rx="18" ry="14"/>
+                  <ellipse cx="72" cy="36" rx="18" ry="14" transform="rotate(72 72 36)"/>
+                  <ellipse cx="64" cy="64" rx="18" ry="14" transform="rotate(144 64 64)"/>
+                  <ellipse cx="36" cy="64" rx="18" ry="14" transform="rotate(216 36 64)"/>
+                  <ellipse cx="28" cy="36" rx="18" ry="14" transform="rotate(288 28 36)"/>
+                  {/* Middle layer */}
+                  <ellipse cx="50" cy="35" rx="14" ry="11"/>
+                  <ellipse cx="62" cy="44" rx="14" ry="11" transform="rotate(72 62 44)"/>
+                  <ellipse cx="56" cy="56" rx="14" ry="11" transform="rotate(144 56 56)"/>
+                  <ellipse cx="44" cy="56" rx="14" ry="11" transform="rotate(216 44 56)"/>
+                  <ellipse cx="38" cy="44" rx="14" ry="11" transform="rotate(288 38 44)"/>
+                  {/* Center */}
+                  <circle cx="50" cy="50" r="10" stroke="#3D3D3D" strokeWidth="2"/>
+                  <circle cx="50" cy="50" r="6"/>
+                </g>
+              </svg>
             </div>
             <div>
               <h1 className="text-3xl md:text-5xl font-serif text-[#3D3D3D] mb-1">
