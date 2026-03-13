@@ -146,14 +146,26 @@ function GlobeView({ guides, onMarkerClick }) {
           wrapper.style.pointerEvents = 'auto'
 
           const el = document.createElement('div')
-          el.style.width = '12px'
-          el.style.height = '12px'
-          el.style.borderRadius = '50%'
-          el.style.backgroundColor = d.color
+          el.style.width = '16px'
+          el.style.height = '16px'
           el.style.cursor = 'pointer'
-          el.style.border = '1px solid rgba(61, 61, 61, 0.3)'
-          el.style.boxShadow = '0 0 4px rgba(0,0,0,0.2)'
           el.style.position = 'relative'
+
+          // Create white flower shape with yellow center
+          el.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+              <g>
+                <!-- 5 petals -->
+                <circle cx="8" cy="3" r="3" fill="white" opacity="0.95" stroke="#E0E0E0" stroke-width="0.5"/>
+                <circle cx="13" cy="6.5" r="3" fill="white" opacity="0.95" stroke="#E0E0E0" stroke-width="0.5"/>
+                <circle cx="11" cy="12" r="3" fill="white" opacity="0.95" stroke="#E0E0E0" stroke-width="0.5"/>
+                <circle cx="5" cy="12" r="3" fill="white" opacity="0.95" stroke="#E0E0E0" stroke-width="0.5"/>
+                <circle cx="3" cy="6.5" r="3" fill="white" opacity="0.95" stroke="#E0E0E0" stroke-width="0.5"/>
+                <!-- Center -->
+                <circle cx="8" cy="8" r="2.5" fill="#FFD700"/>
+              </g>
+            </svg>
+          `
 
           const guide = d.guides[0]
           const count = d.count
