@@ -172,7 +172,7 @@ function App() {
                 )}
                 <input
                   type="text"
-                  placeholder="Search cities, countries, authors..."
+                  placeholder="Search cities, countries..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full md:w-80 px-4 md:px-6 py-2 md:py-3 bg-white bg-opacity-40 rounded-full text-[#3D3D3D] placeholder-[#8B7355] focus:outline-none focus:ring-2 focus:ring-[#8B4513] text-sm md:text-base"
@@ -195,7 +195,7 @@ function App() {
 
               {/* Curated Guides Dropdown */}
               {!viewingMyGuides && showCuratedDropdown && (
-                <div className="absolute top-full mt-2 left-0 w-96 max-w-screen bg-white bg-opacity-95 rounded-2xl shadow-2xl p-4 z-50 max-h-[500px] overflow-y-auto"
+                <div className="absolute top-full mt-2 left-0 right-0 md:right-auto md:w-96 max-w-full bg-white bg-opacity-95 rounded-2xl shadow-2xl p-4 z-50 max-h-[500px] overflow-y-auto"
                   style={{
                     scrollbarWidth: 'thin',
                     scrollbarColor: '#8B4513 transparent'
@@ -334,7 +334,7 @@ function App() {
       <div className="max-w-7xl mx-auto px-4 md:px-12 py-4 md:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8">
           {/* Left Sidebar */}
-          <div className="lg:col-span-4 space-y-4 md:space-y-6">
+          <div className="lg:col-span-4 space-y-4 md:space-y-6 order-2 lg:order-1">
             {/* Location Feed */}
             <div className="bg-white bg-opacity-40 rounded-2xl md:rounded-3xl p-4 md:p-6">
                 <p className="text-xs text-[#8B7355] uppercase tracking-widest mb-2 md:mb-3 font-mono">
@@ -523,9 +523,9 @@ function App() {
           </div>
 
           {/* Globe - Center */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 order-1 lg:order-2">
             {filteredGuides.length === 0 && searchQuery ? (
-              <div className="relative w-full h-[calc(100vh-200px)] flex items-center justify-center bg-white bg-opacity-20 rounded-3xl">
+              <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[calc(100vh-200px)] flex items-center justify-center bg-white bg-opacity-20 rounded-3xl">
                 <div className="text-center">
                   <div className="text-5xl mb-4">🔍</div>
                   {viewingMyGuides && signedInUser ? (
@@ -548,7 +548,7 @@ function App() {
                 </div>
               </div>
             ) : (
-              <div className="relative w-full h-[calc(100vh-200px)]">
+              <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[calc(100vh-200px)]">
                 <GlobeView
                   guides={filteredGuides}
                   onMarkerClick={(guidesAtLocation) => {
