@@ -8,6 +8,42 @@ function GlobeView({ guides, onMarkerClick }) {
   const [countries, setCountries] = useState({ features: [] })
   const [dimensions, setDimensions] = useState({ width: 800, height: 800 })
 
+  // Get unique countries that have guides
+  const countriesWithGuides = new Set(guides.map(guide => guide.country_name))
+
+  // Country name mapping for GeoJSON to our database names
+  const countryNameMap = {
+    'United States of America': 'United States',
+    'United Kingdom': 'United Kingdom',
+    'UAE': 'United Arab Emirates',
+    'Russia': 'Russia',
+    'South Korea': 'South Korea',
+    'North Korea': 'North Korea',
+    'Czech Republic': 'Czech Republic',
+    'Republic of the Congo': 'Congo',
+    'Democratic Republic of the Congo': 'Congo',
+    'Tanzania': 'Tanzania',
+    'Czechia': 'Czech Republic'
+  }
+
+  const hasGuides = (geoCountryName) => {
+    // Direct match
+    if (countriesWithGuides.has(geoCountryName)) return true
+
+    // Check mapping
+    const mappedName = countryNameMap[geoCountryName]
+    if (mappedName && countriesWithGuides.has(mappedName)) return true
+
+    // Partial match (e.g., "United States" matches "United States of America")
+    for (const country of countriesWithGuides) {
+      if (geoCountryName.includes(country) || country.includes(geoCountryName)) {
+        return true
+      }
+    }
+
+    return false
+  }
+
   useEffect(() => {
     // Fetch country borders data
     fetch('https://raw.githubusercontent.com/vasturiano/react-globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
@@ -87,7 +123,14 @@ function GlobeView({ guides, onMarkerClick }) {
 
         // Country borders
         polygonsData={countries.features}
-        polygonCapColor={() => 'rgba(0, 0, 0, 0)'}
+        polygonCapColor={(d) => {
+          const countryName = d.properties.NAME || d.properties.name || d.properties.ADMIN
+          // Check if this country has guides
+          if (hasGuides(countryName)) {
+            return 'rgba(150, 200, 230, 0.3)' // Light blue
+          }
+          return 'rgba(0, 0, 0, 0)' // Transparent
+        }}
         polygonSideColor={() => 'rgba(0, 0, 0, 0)'}
         polygonStrokeColor={() => 'rgba(150, 200, 230, 0.4)'}
         polygonAltitude={0}
