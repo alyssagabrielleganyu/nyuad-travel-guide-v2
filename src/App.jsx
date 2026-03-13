@@ -308,7 +308,17 @@ function App() {
                     </h2>
                     <p className="text-xs md:text-sm text-[#8B7355]">
                       by {selectedGuide.author_name}
-                      {selectedGuide.is_legacy && ' • 2018 Legacy Entry'}
+                      {selectedGuide.is_legacy && " • Local • 2018 Legacy Entry"}
+                      {!selectedGuide.is_legacy && selectedGuide.street_cred === 'from_here' && " • Local"}
+                      {!selectedGuide.is_legacy && selectedGuide.street_cred === 'lived_here' && ` • Lived here for ${selectedGuide.street_cred_years} years`}
+                      {!selectedGuide.is_legacy && selectedGuide.street_cred === 'tourist' && " • Tourist"}
+                      {!selectedGuide.is_legacy && selectedGuide.created_at && (() => {
+                        const date = new Date(selectedGuide.created_at)
+                        if (date.getFullYear() >= 2026) {
+                          return ` • ${date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
+                        }
+                        return ''
+                      })()}
                     </p>
                   </div>
                   <button

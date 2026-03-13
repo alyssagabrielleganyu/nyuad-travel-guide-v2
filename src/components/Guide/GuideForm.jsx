@@ -58,6 +58,8 @@ function GuideForm({ onSuccess, onCancel }) {
     author_name: '',
     country_name: '',
     city: '',
+    street_cred: '',
+    street_cred_years: '',
     dish: '',
     sunset: '',
     family: '',
@@ -125,8 +127,15 @@ function GuideForm({ onSuccess, onCancel }) {
     setError(null)
 
     // Validate required fields
-    if (!formData.author_name || !formData.country_name || !formData.city) {
-      setError('Please fill in all required fields (name, country, city)')
+    if (!formData.author_name || !formData.country_name || !formData.city || !formData.street_cred) {
+      setError('Please fill in all required fields (name, country, city, street cred)')
+      setLoading(false)
+      return
+    }
+
+    // Validate street_cred_years if "lived here" is selected
+    if (formData.street_cred === 'lived_here' && (!formData.street_cred_years || formData.street_cred_years <= 0)) {
+      setError('Please specify how many years you lived here')
       setLoading(false)
       return
     }
@@ -163,6 +172,8 @@ function GuideForm({ onSuccess, onCancel }) {
           latitude: geocodeResult.latitude,
           longitude: geocodeResult.longitude,
           country: 'XXX', // Will need proper ISO code lookup
+          street_cred: formData.street_cred,
+          street_cred_years: formData.street_cred === 'lived_here' ? parseInt(formData.street_cred_years) : null,
           dish: formData.dish || null,
           sunset: formData.sunset || null,
           family: formData.family || null,
@@ -283,6 +294,68 @@ function GuideForm({ onSuccess, onCancel }) {
           <p className="text-xs text-[#8B7355]">
             📍 Select country, then type city name for suggestions. Location will be mapped automatically.
           </p>
+
+          {/* Street Cred */}
+          <div>
+            <label className="block text-xs text-[#8B7355] uppercase tracking-widest mb-1 font-mono">
+              Street Cred *
+            </label>
+            <div className="space-y-1">
+              <label className="flex items-center gap-2 p-2 bg-white bg-opacity-40 rounded-lg cursor-pointer hover:bg-opacity-60 transition">
+                <input
+                  type="radio"
+                  name="street_cred"
+                  value="from_here"
+                  checked={formData.street_cred === 'from_here'}
+                  onChange={handleChange}
+                  required
+                  className="w-4 h-4"
+                />
+                <span className="text-sm text-[#3D3D3D]">I'm from here</span>
+              </label>
+
+              <label className="flex items-center gap-2 p-2 bg-white bg-opacity-40 rounded-lg cursor-pointer hover:bg-opacity-60 transition">
+                <input
+                  type="radio"
+                  name="street_cred"
+                  value="lived_here"
+                  checked={formData.street_cred === 'lived_here'}
+                  onChange={handleChange}
+                  required
+                  className="w-4 h-4"
+                />
+                <span className="text-sm text-[#3D3D3D]">Lived here for</span>
+                {formData.street_cred === 'lived_here' && (
+                  <>
+                    <input
+                      type="number"
+                      name="street_cred_years"
+                      value={formData.street_cred_years}
+                      onChange={handleChange}
+                      min="1"
+                      required
+                      className="w-16 px-2 py-1 bg-white bg-opacity-60 rounded text-[#3D3D3D] text-sm focus:outline-none focus:ring-2 focus:ring-[#8B4513]"
+                      placeholder="0"
+                    />
+                    <span className="text-sm text-[#3D3D3D]">years</span>
+                  </>
+                )}
+              </label>
+
+              <label className="flex items-center gap-2 p-2 bg-white bg-opacity-40 rounded-lg cursor-pointer hover:bg-opacity-60 transition">
+                <input
+                  type="radio"
+                  name="street_cred"
+                  value="tourist"
+                  checked={formData.street_cred === 'tourist'}
+                  onChange={handleChange}
+                  required
+                  className="w-4 h-4"
+                />
+                <span className="text-sm text-[#3D3D3D]">Tourist</span>
+              </label>
+            </div>
+          </div>
         </div>
 
         {/* Guide Content */}
