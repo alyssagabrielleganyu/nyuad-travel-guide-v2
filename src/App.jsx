@@ -3,6 +3,8 @@ import { useAuth } from './hooks/useAuth'
 import { useGuides } from './hooks/useGuides'
 import GlobeView from './components/Map/GlobeView'
 import GuideForm from './components/Guide/GuideForm'
+import GuideEditForm from './components/Guide/GuideEditForm'
+import SignInModal from './components/Auth/SignInModal'
 
 // Helper function to get continent from country
 const getContinent = (countryName) => {
@@ -33,6 +35,10 @@ function App() {
   const [expandedCountry, setExpandedCountry] = useState(null)
   const [showCuratedDropdown, setShowCuratedDropdown] = useState(false)
   const [showGuideForm, setShowGuideForm] = useState(false)
+  const [showSignIn, setShowSignIn] = useState(false)
+  const [signedInUser, setSignedInUser] = useState(null)
+  const [viewingMyGuides, setViewingMyGuides] = useState(false)
+  const [editingGuide, setEditingGuide] = useState(null)
 
   // Auto-select when search has results
   useEffect(() => {
@@ -79,8 +85,13 @@ function App() {
     )
   }
 
-  // Filter guides based on search query
+  // Filter guides based on search query and viewing mode
   const filteredGuides = guides.filter(guide => {
+    // If viewing my guides, only show user's guides
+    if (viewingMyGuides && signedInUser) {
+      if (guide.email !== signedInUser.email) return false
+    }
+
     if (!searchQuery.trim()) return true
 
     const query = searchQuery.toLowerCase()
@@ -111,23 +122,49 @@ function App() {
               <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-[#3D3D3D]"></div>
             </div>
             <div>
-              <h1 className="text-3xl md:text-5xl font-serif text-[#3D3D3D] mb-1">hello, world!</h1>
+              <h1 className="text-3xl md:text-5xl font-serif text-[#3D3D3D] mb-1">
+                {viewingMyGuides ? 'my guides' : 'hello, world!'}
+              </h1>
               <p className="text-xs md:text-sm text-[#8B7355] font-mono">
-                {searchQuery ? `${filteredGuides.length} of ${guides.length}` : `${guides.length}`} destinations mapped
+                {viewingMyGuides ? (
+                  <>
+                    {signedInUser?.email} • {filteredGuides.length} {filteredGuides.length === 1 ? 'guide' : 'guides'}
+                  </>
+                ) : (
+                  <>
+                    {searchQuery ? `${filteredGuides.length} of ${guides.length}` : `${guides.length}`} destinations mapped
+                  </>
+                )}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto relative">
+            {/* Back to All Guides button when viewing my guides */}
+            {viewingMyGuides && (
+              <button
+                onClick={() => {
+                  setViewingMyGuides(false)
+                  setSelectedGuides([])
+                  setCurrentGuideIndex(0)
+                }}
+                className="px-3 md:px-4 py-2 md:py-3 bg-[#3D3D3D] text-[#F5E6D3] rounded-full hover:bg-[#5D5D5D] transition text-xs md:text-sm font-medium whitespace-nowrap"
+              >
+                ← All Guides
+              </button>
+            )}
+
             {/* Search Bar with Browse */}
             <div className="relative flex-1 md:flex-none">
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setShowCuratedDropdown(!showCuratedDropdown)}
-                  className="px-3 md:px-4 py-2 md:py-3 bg-[#3D3D3D] text-[#F5E6D3] rounded-full hover:bg-[#5D5D5D] transition text-xs md:text-sm font-medium whitespace-nowrap"
-                >
-                  Browse ☰
-                </button>
+                {!viewingMyGuides && (
+                  <button
+                    onClick={() => setShowCuratedDropdown(!showCuratedDropdown)}
+                    className="px-3 md:px-4 py-2 md:py-3 bg-[#3D3D3D] text-[#F5E6D3] rounded-full hover:bg-[#5D5D5D] transition text-xs md:text-sm font-medium whitespace-nowrap"
+                  >
+                    Browse ☰
+                  </button>
+                )}
                 <input
                   type="text"
                   placeholder="Search cities, countries, authors..."
@@ -152,7 +189,7 @@ function App() {
               )}
 
               {/* Curated Guides Dropdown */}
-              {showCuratedDropdown && (
+              {!viewingMyGuides && showCuratedDropdown && (
                 <div className="absolute top-full mt-2 left-0 w-96 max-w-screen bg-white bg-opacity-95 rounded-2xl shadow-2xl p-4 z-50 max-h-[500px] overflow-y-auto"
                   style={{
                     scrollbarWidth: 'thin',
@@ -256,7 +293,30 @@ function App() {
             >
               + Add Guide
             </button>
-            <button className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#3D3D3D] text-[#F5E6D3] flex items-center justify-center hover:bg-[#5D5D5D] transition">
+
+            {viewingMyGuides && signedInUser && (
+              <button
+                onClick={() => {
+                  setSignedInUser(null)
+                  setViewingMyGuides(false)
+                }}
+                className="px-3 md:px-4 py-2 md:py-3 bg-[#3D3D3D] text-[#F5E6D3] rounded-full hover:bg-[#5D5D5D] transition text-xs md:text-sm font-medium whitespace-nowrap"
+              >
+                Sign Out
+              </button>
+            )}
+
+            <button
+              onClick={() => {
+                if (signedInUser) {
+                  setViewingMyGuides(!viewingMyGuides)
+                  setShowCuratedDropdown(false)
+                } else {
+                  setShowSignIn(true)
+                }
+              }}
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#3D3D3D] text-[#F5E6D3] flex items-center justify-center hover:bg-[#5D5D5D] transition"
+            >
               <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
@@ -321,15 +381,25 @@ function App() {
                       })()}
                     </p>
                   </div>
-                  <button
-                    onClick={() => {
-                      setSelectedGuides([])
-                      setCurrentGuideIndex(0)
-                    }}
-                    className="text-2xl text-[#8B7355] hover:text-[#3D3D3D] transition flex-shrink-0"
-                  >
-                    ×
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {viewingMyGuides && signedInUser && selectedGuide.email === signedInUser.email && (
+                      <button
+                        onClick={() => setEditingGuide(selectedGuide)}
+                        className="px-3 py-2 bg-[#8B4513] text-[#F5E6D3] rounded-full hover:bg-[#6D3410] transition text-xs font-medium"
+                      >
+                        Edit
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        setSelectedGuides([])
+                        setCurrentGuideIndex(0)
+                      }}
+                      className="text-2xl text-[#8B7355] hover:text-[#3D3D3D] transition flex-shrink-0"
+                    >
+                      ×
+                    </button>
+                  </div>
                 </div>
 
                 {/* Navigation arrows for multiple guides */}
@@ -484,6 +554,46 @@ function App() {
                 setCurrentGuideIndex(0)
               }}
               onCancel={() => setShowGuideForm(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Sign In Modal */}
+      {showSignIn && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <SignInModal
+            onSuccess={({ email, guides }) => {
+              setSignedInUser({ email, guides })
+              setShowSignIn(false)
+              setViewingMyGuides(true)
+            }}
+            onCancel={() => setShowSignIn(false)}
+          />
+        </div>
+      )}
+
+      {/* Edit Guide Modal */}
+      {editingGuide && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="w-full max-w-2xl">
+            <GuideEditForm
+              guide={editingGuide}
+              onSuccess={(updatedGuide) => {
+                setEditingGuide(null)
+                // Update the guide in signedInUser.guides
+                setSignedInUser(prev => ({
+                  ...prev,
+                  guides: prev.guides.map(g => g.id === updatedGuide.id ? updatedGuide : g)
+                }))
+                // Update selected guide if it's the one being edited
+                if (selectedGuides.length > 0 && selectedGuides[currentGuideIndex].id === updatedGuide.id) {
+                  setSelectedGuides(prev => prev.map(g => g.id === updatedGuide.id ? updatedGuide : g))
+                }
+              }}
+              onCancel={() => {
+                setEditingGuide(null)
+              }}
             />
           </div>
         </div>
