@@ -52,6 +52,11 @@ function App() {
     // Filter guides based on search
     const query = searchQuery.toLowerCase()
     const filtered = guides.filter(guide => {
+      // If viewing my guides, only show user's guides
+      if (viewingMyGuides && signedInUser) {
+        if (guide.email !== signedInUser.email) return false
+      }
+
       return (
         guide.city?.toLowerCase().includes(query) ||
         guide.country_name?.toLowerCase().includes(query) ||
@@ -71,7 +76,7 @@ function App() {
       setSelectedGuides([])
       setCurrentGuideIndex(0)
     }
-  }, [searchQuery, guides])
+  }, [searchQuery, guides, viewingMyGuides, signedInUser])
 
 
   if (loading) {
@@ -523,8 +528,23 @@ function App() {
               <div className="relative w-full h-[calc(100vh-200px)] flex items-center justify-center bg-white bg-opacity-20 rounded-3xl">
                 <div className="text-center">
                   <div className="text-5xl mb-4">🔍</div>
-                  <p className="text-xl md:text-2xl text-[#3D3D3D] font-serif mb-2">No destinations found</p>
-                  <p className="text-sm text-[#8B7355]">Try searching for a different city, country, or author</p>
+                  {viewingMyGuides && signedInUser ? (
+                    <>
+                      <p className="text-xl md:text-2xl text-[#3D3D3D] font-serif mb-2">You have no guides for this area</p>
+                      <p className="text-sm text-[#8B7355] mb-4">Share your travel experiences!</p>
+                      <button
+                        onClick={() => setShowGuideForm(true)}
+                        className="px-6 py-3 bg-[#8B4513] text-[#F5E6D3] rounded-full hover:bg-[#6D3410] transition text-sm font-medium"
+                      >
+                        + Add Guide
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-xl md:text-2xl text-[#3D3D3D] font-serif mb-2">No destinations found</p>
+                      <p className="text-sm text-[#8B7355]">Try searching for a different city, country, or author</p>
+                    </>
+                  )}
                 </div>
               </div>
             ) : (
