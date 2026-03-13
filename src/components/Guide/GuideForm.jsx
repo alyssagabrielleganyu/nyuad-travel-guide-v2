@@ -56,6 +56,7 @@ function GuideForm({ onSuccess, onCancel }) {
   const [cityInputFocused, setCityInputFocused] = useState(false)
   const [formData, setFormData] = useState({
     author_name: '',
+    email: '',
     country_name: '',
     city: '',
     street_cred: '',
@@ -127,8 +128,16 @@ function GuideForm({ onSuccess, onCancel }) {
     setError(null)
 
     // Validate required fields
-    if (!formData.author_name || !formData.country_name || !formData.city || !formData.street_cred) {
-      setError('Please fill in all required fields (name, country, city, street cred)')
+    if (!formData.author_name || !formData.email || !formData.country_name || !formData.city || !formData.street_cred) {
+      setError('Please fill in all required fields (name, email, country, city, street cred)')
+      setLoading(false)
+      return
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address')
       setLoading(false)
       return
     }
@@ -167,6 +176,7 @@ function GuideForm({ onSuccess, onCancel }) {
         .insert([{
           user_id: user?.id || null,
           author_name: formData.author_name,
+          email: formData.email,
           country_name: formData.country_name,
           city: formData.city,
           latitude: geocodeResult.latitude,
@@ -225,19 +235,35 @@ function GuideForm({ onSuccess, onCancel }) {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Basic Info */}
         <div className="space-y-4 pb-4 border-b border-[#3D3D3D]">
-          <div>
-            <label className="block text-xs text-[#8B7355] uppercase tracking-widest mb-1 font-mono">
-              Your Name *
-            </label>
-            <input
-              type="text"
-              name="author_name"
-              value={formData.author_name}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 bg-white bg-opacity-40 rounded-lg text-[#3D3D3D] placeholder-[#8B7355] focus:outline-none focus:ring-2 focus:ring-[#8B4513] text-sm"
-              placeholder="Your name"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs text-[#8B7355] uppercase tracking-widest mb-1 font-mono">
+                Your Name *
+              </label>
+              <input
+                type="text"
+                name="author_name"
+                value={formData.author_name}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 bg-white bg-opacity-40 rounded-lg text-[#3D3D3D] placeholder-[#8B7355] focus:outline-none focus:ring-2 focus:ring-[#8B4513] text-sm"
+                placeholder="Your name"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-[#8B7355] uppercase tracking-widest mb-1 font-mono">
+                Your Email *
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 bg-white bg-opacity-40 rounded-lg text-[#3D3D3D] placeholder-[#8B7355] focus:outline-none focus:ring-2 focus:ring-[#8B4513] text-sm"
+                placeholder="your@email.com"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -291,9 +317,6 @@ function GuideForm({ onSuccess, onCancel }) {
               )}
             </div>
           </div>
-          <p className="text-xs text-[#8B7355]">
-            📍 Select country, then type city name for suggestions. Location will be mapped automatically.
-          </p>
 
           {/* Street Cred */}
           <div>
@@ -374,7 +397,7 @@ function GuideForm({ onSuccess, onCancel }) {
               onChange={handleChange}
               rows="2"
               className="w-full px-4 py-2 bg-white bg-opacity-40 rounded-lg text-[#3D3D3D] placeholder-[#8B7355] focus:outline-none focus:ring-2 focus:ring-[#8B4513] text-sm"
-              placeholder="What dishes should travelers try?"
+              placeholder="What dish should I eat and where?"
             />
           </div>
 
